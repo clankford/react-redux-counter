@@ -8,25 +8,37 @@ function reducer(state, action) {
     }
 }
 
-const incrementAction = { 
+function createStore(reducer) {
+    let state = 0;
+
+    const getState = () => (state);
+
+    const dispatch = (action) => {
+        state = reducer(state, action);
+    };
+
+    return {
+        getState,
+        dispatch,
+    };
+}
+
+const store = createStore(reducer);
+
+const incrementAction = {
     type: 'INCREMENT',
-    amount: 5,
+    amount: 4,
 };
 
-console.log(reducer(0, incrementAction));
-console.log(reducer(1, incrementAction));
-console.log(reducer(9999, incrementAction));
+store.dispatch(incrementAction);
+console.log(store.getState());
+store.dispatch(incrementAction);
+console.log(store.getState());
 
-const unknownAction = { type: 'FAKEACTION' };
-
-console.log(reducer(5, unknownAction));
-console.log(reducer(8, unknownAction));
-
-const decrementAction = { 
+const decrementAction = {
     type: 'DECREMENT',
-    amount: 32,
+    amount: 10,  
 };
 
-console.log(reducer(10, decrementAction));
-console.log(reducer(10000, decrementAction));
-console.log(reducer(0, decrementAction));
+store.dispatch(decrementAction);
+console.log(store.getState());
