@@ -35,28 +35,23 @@ function reducer(state, action) {
     }
 }
 
+const App = React.createClass({
+    componentDidMount: function() {
+        store.subscribe(() => this.forceUpdate());
+    },
+
+    render: function() {
+        const messages = store.getState().messages
+
+        return (
+            <div className='ui segment'>
+                <MessageView messages={messages} />
+                <MessageInput />
+            </div>
+        );
+    },
+});
+
 const initialState = { messages: [] };
 
 const store = createStore(reducer, initialState);
-
-const listener = () => (console.log(store.getState()));
-
-store.subscribe(listener);
-
-const addMessageAction1 = {
-    type: 'ADD_MESSAGE',
-    message: 'Hello World!',
-};
-store.dispatch(addMessageAction1);
-
-const addMessageAction2 = {
-    type: 'ADD_MESSAGE',
-    message: 'Goodbye World!',
-};
-store.dispatch(addMessageAction2);
-
-const deleteMessageAction = {
-    type: 'DELETE_MESSAGE',
-    index: 0,
-};
-store.dispatch(deleteMessageAction);
