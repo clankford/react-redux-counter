@@ -52,6 +52,30 @@ const App = React.createClass({
     },
 });
 
+const MessageInput = React.createClass({
+    handleSubmit: function() {
+        store.dispatch({
+            type: 'ADD_MESSAGE',
+            message: this.refs.messageInput.value,
+        });
+    },
+    
+    render: function() {
+        return (
+            <div className='ui input'>
+                <input ref='messageInput' type='text' />
+                <button 
+                    onClick={this.handleSubmit}
+                    className='ui primary button'
+                    type='submit'
+                >
+                    Submit
+                </button>
+            </div>
+        );
+    },
+});
+
 const initialState = { messages: [] };
 
 const store = createStore(reducer, initialState);
