@@ -2,7 +2,9 @@
   "name": "react-redux-counter",
   "version": "1.0.0",
   "author": "Chris Lankford",
-  "scripts": {},
+  "scripts": {
+    "server": "echo 'Find the server at http://localhost:3000\n' && ./node_modules/http-server/bin/http-server ./public -p 3000"
+  },
   "babel": {
     "presets": [
       "es2015",

@@ -35,6 +35,10 @@ function reducer(state, action) {
     }
 }
 
+const initialState = { messages: [] };
+
+const store = createStore(reducer, initialState);
+
 const App = React.createClass({
     componentDidMount: function() {
         store.subscribe(() => this.forceUpdate());
@@ -76,6 +80,36 @@ const MessageInput = React.createClass({
     },
 });
 
-const initialState = { messages: [] };
+const MessageView = React.createClass({
+    handleClick: function(index) {
+        store.dispatch({
+            type: 'DELETE_MESSAGE',
+            index: index,
+        });
+    },
 
-const store = createStore(reducer, initialState);
+    render: function() {
+        const messages = this.props.messages.map((message, index) => (
+            <div
+                className='comment'
+                key={index}
+                onClick={()=> this.handleClick(index)}
+            >
+                {message}
+            </div>
+        ));
+
+        return (
+            <div className='ui comments'>
+                {messages}
+            </div>
+        );
+    },
+});
+
+ReactDOM.render(
+    <App />,
+    document.getElementById('content')
+);
+
+
