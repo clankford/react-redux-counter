@@ -25,7 +25,27 @@ function reducer(state, action) {
     }
 }
 
-const initialState = { messages: [] };
+const initialState = { 
+    activeThreadId: '1-fca2',
+    threads: [
+        {
+            id: '1-fca2',
+            title: 'Alexis Sanchez',
+            messages: [
+                {
+                    text: 'We beat Watford 3-0!',
+                    timestamp: Date.now(),
+                    id: uuid.v4,
+                },
+            ],
+        },
+        {
+            id: '2-be91',
+            title: 'Peter Cech',
+            messages: [],
+        },
+    ],
+};
 
 const store = Redux.createStore(reducer, initialState);
 
