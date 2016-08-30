@@ -55,12 +55,14 @@ const App = React.createClass({
     },
 
     render: function() {
-        const messages = store.getState().messages
+        const state = store.getState();
+        const activeThreadId = state.activeThreadId;
+        const threads = state.threads;
+        const activeThread = threads.find((t) => t.id === activeThreadId);
 
         return (
             <div className='ui segment'>
-                <MessageView messages={messages} />
-                <MessageInput />
+                <Thread thread={activeThread} />
             </div>
         );
     },
