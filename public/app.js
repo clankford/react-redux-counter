@@ -68,6 +68,39 @@ const App = React.createClass({
     },
 });
 
+const Thread = React.createClass({
+    handleClick: function(id) {
+        store.dispatch({
+            type: 'DELETE_MESSAGE',
+            id: id,
+        });
+    },
+
+    render: function() {
+        const messages = this.props.thread.messages.map((message, index) => (
+            <div
+                className='comment'
+                key={index}
+                onClick={()=> this.handleClick(message.id)}
+            >
+                <div className='text'>    
+                    {message.text}
+                    <span className='metadata'>@{message.timestamp}</span>
+                </div>
+            </div>
+        ));
+
+        return (
+            <div className='ui center aligned basic segment'>
+                <div className='ui comments'>
+                    {messages}
+                </div>
+                <MessageInput />
+            </div>
+        );
+    },
+});
+
 const MessageInput = React.createClass({
     handleSubmit: function() {
         store.dispatch({
@@ -88,36 +121,6 @@ const MessageInput = React.createClass({
                 >
                     Submit
                 </button>
-            </div>
-        );
-    },
-});
-
-const MessageView = React.createClass({
-    handleClick: function(id) {
-        store.dispatch({
-            type: 'DELETE_MESSAGE',
-            id: id,
-        });
-    },
-
-    render: function() {
-        const messages = this.props.messages.map((message, index) => (
-            <div
-                className='comment'
-                key={index}
-                onClick={()=> this.handleClick(message.id)}
-            >
-                <div className='text'>    
-                    {message.text}
-                    <span className='metadata'>@{message.timestamp}</span>
-                </div>
-            </div>
-        ));
-
-        return (
-            <div className='ui comments'>
-                {messages}
             </div>
         );
     },
