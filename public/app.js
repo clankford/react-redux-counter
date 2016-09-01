@@ -31,7 +31,7 @@ function reducer(state, action) {
         // return {
         //     ...state,
         //     threads: [
-        //          ...state.threads.slick(0, threadIndex),
+        //          ...state.threads.slice(0, threadIndex),
         //          newThread,
         //          ...state.threads.slice(
         //              threadIndex + 1, state.threads.length
@@ -40,17 +40,51 @@ function reducer(state, action) {
         // }
 
     } else if (action.type === 'DELETE_MESSAGE') {
-       const index = state.messages.findIndex(
+       const threadIndex = state.threads.findIndex(
+           (t) => t.messages.find((m) => (
+               m.id === action.id
+           ))
+       );
+       const oldThread = state.threads[threadIndex];
+       const messageIndex = oldThread.messages.findIndex(
            (m) => m.id === action.id
        );
-       return {
-           messages: [
-               ...state.messages.slice(0, index),
-               ...state.messages.slice(
-                   index + 1, state.messages.length
-               ),
-           ],
-       };
+       const messages = [
+           ...oldThread.messages.slice(0, messageIndex),
+           ...oldThread.messages.slice(
+               messageIndex + 1, oldThread.messages.length
+           ),
+       ];
+       const newThread = 
+           Object.assign({}, oldThread, {
+                messages: messages,
+            });
+            // ES7 Syntax
+            // {
+            //    ...oldThread,
+            //    messages: oldThread.messages.concat(newMessage),
+            // }
+
+       return Object.assign({}, state, {
+                threads: [
+                    ...state.threads.slice(0, threadIndex),
+                    newThread,
+                    ...state.threads.slice(
+                        threadIndex + 1, state.threads.length
+                    ),
+                ]
+            });
+       // ES7 Syntax
+       // return {
+       //     ...state,
+       //     threads: [
+       //          ...state.threads.slice(0, threadIndex),
+       //          newThread,
+       //          ...state.threads.slice(
+       //              threadIndex + 1, state.threads.length
+       //          ),
+       //     ]
+       // }
     } else {
         return state;
     }
