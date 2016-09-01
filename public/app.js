@@ -5,9 +5,40 @@ function reducer(state, action) {
             timestamp: Date.now(),
             id: uuid.v4(),
         };
-        return {
-            messages: state.messages.concat(newMessage),
-        };
+        const threadIndex = state.threads.findIndex(
+            (t) => t.id === action.threadId
+        );
+        const oldThread = state.threads[threadIndex];
+        const newThread = 
+            Object.assign({}, oldThread, {
+                messages: oldThread.messages.concat(newMessage),
+            });
+            // ES7 Syntax
+            // {
+            //    ...oldThread,
+            //    messages: oldThread.messages.concat(newMessage),
+            // }
+        return Object.assign({}, state, {
+                threads: [
+                    ...state.threads.slice(0, threadIndex),
+                    newThread,
+                    ...state.threads.slice(
+                        threadIndex + 1, state.threads.length
+                    ),
+                ]
+            });
+        // ES7 Syntax
+        // return {
+        //     ...state,
+        //     threads: [
+        //          ...state.threads.slick(0, threadIndex),
+        //          newThread,
+        //          ...state.threads.slice(
+        //              threadIndex + 1, state.threads.length
+        //          ),
+        //     ]
+        // }
+
     } else if (action.type === 'DELETE_MESSAGE') {
        const index = state.messages.findIndex(
            (m) => m.id === action.id
@@ -121,7 +152,7 @@ const Thread = React.createClass({
                 <div className='ui comments'>
                     {messages}
                 </div>
-                <MessageInput />
+                <MessageInput threadId={this.props.thread.id} />
             </div>
         );
     },
@@ -132,6 +163,7 @@ const MessageInput = React.createClass({
         store.dispatch({
             type: 'ADD_MESSAGE',
             text: this.refs.messageInput.value,
+            threadId: this.props.threadId,
         });
         this.refs.messageInput.value = '';
     },
