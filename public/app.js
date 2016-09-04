@@ -9,35 +9,21 @@ function reducer(state, action) {
             (t) => t.id === action.threadId
         );
         const oldThread = state.threads[threadIndex];
-        const newThread = 
-            Object.assign({}, oldThread, {
+        const newThread =
+            {
+                ...oldThread,
                 messages: oldThread.messages.concat(newMessage),
-            });
-            // ES7 Syntax
-            // {
-            //    ...oldThread,
-            //    messages: oldThread.messages.concat(newMessage),
-            // }
-        return Object.assign({}, state, {
-                threads: [
-                    ...state.threads.slice(0, threadIndex),
-                    newThread,
-                    ...state.threads.slice(
-                        threadIndex + 1, state.threads.length
-                    ),
-                ]
-            });
-        // ES7 Syntax
-        // return {
-        //     ...state,
-        //     threads: [
-        //          ...state.threads.slice(0, threadIndex),
-        //          newThread,
-        //          ...state.threads.slice(
-        //              threadIndex + 1, state.threads.length
-        //          ),
-        //     ]
-        // }
+            }
+        return {
+            ...state,
+            threads: [
+                ...state.threads.slice(0, threadIndex),
+                newThread,
+                 ...state.threads.slice(
+                     threadIndex + 1, state.threads.length
+                 ),
+            ]
+        }
 
     } else if (action.type === 'DELETE_MESSAGE') {
        const threadIndex = state.threads.findIndex(
@@ -55,36 +41,22 @@ function reducer(state, action) {
                messageIndex + 1, oldThread.messages.length
            ),
        ];
-       const newThread = 
-           Object.assign({}, oldThread, {
+       const newThread =
+            {
+                ...oldThread,
                 messages: messages,
-            });
-            // ES7 Syntax
-            // {
-            //    ...oldThread,
-            //    messages: oldThread.messages.concat(newMessage),
-            // }
+            }
 
-       return Object.assign({}, state, {
-                threads: [
-                    ...state.threads.slice(0, threadIndex),
-                    newThread,
-                    ...state.threads.slice(
-                        threadIndex + 1, state.threads.length
-                    ),
-                ]
-            });
-       // ES7 Syntax
-       // return {
-       //     ...state,
-       //     threads: [
-       //          ...state.threads.slice(0, threadIndex),
-       //          newThread,
-       //          ...state.threads.slice(
-       //              threadIndex + 1, state.threads.length
-       //          ),
-       //     ]
-       // }
+       return {
+           ...state,
+           threads: [
+                ...state.threads.slice(0, threadIndex),
+                newThread,
+                ...state.threads.slice(
+                    threadIndex + 1, state.threads.length
+                ),
+           ]
+       }
     } else if (action.type === 'OPEN_THREAD') {
         return Object.assign({}, state, {
             activeThreadId: action.id,
@@ -95,7 +67,7 @@ function reducer(state, action) {
     }
 }
 
-const initialState = { 
+const initialState = {
     activeThreadId: '1-fca2',
     threads: [
         {
@@ -154,7 +126,7 @@ const ThreadTabs = React.createClass({
             id: id,
         });
     },
-    
+
     render: function() {
         const tabs = this.props.tabs.map((tab, index) => (
             <div
@@ -188,7 +160,7 @@ const Thread = React.createClass({
                 key={index}
                 onClick={()=> this.handleClick(message.id)}
             >
-                <div className='text'>    
+                <div className='text'>
                     {message.text}
                     <span className='metadata'>@{message.timestamp}</span>
                 </div>
@@ -215,12 +187,12 @@ const MessageInput = React.createClass({
         });
         this.refs.messageInput.value = '';
     },
-    
+
     render: function() {
         return (
             <div className='ui input'>
                 <input ref='messageInput' type='text' />
-                <button 
+                <button
                     onClick={this.handleSubmit}
                     className='ui primary button'
                     type='submit'
@@ -236,5 +208,3 @@ ReactDOM.render(
     <App />,
     document.getElementById('content')
 );
-
-
