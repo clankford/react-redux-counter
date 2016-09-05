@@ -1,20 +1,29 @@
 function reducer(state, action) {
-  return {
-    activeThreadId: activeThreadIdReducer(state.activeThreadId, action),
-    threads: threadsReducer(state.threads, action),
-  }
+    return {
+        activeThreadId: activeThreadIdReducer(state.activeThreadId, action),
+        threads: threadsReducer(state.threads, action),
+    }
 }
 
 function activeThreadIdReducer(state, action) {
-  if (action.type === 'OPEN_THREAD') {
-    return action.id;
-  } else {
-    return state;
-  }
+    if (action.type === 'OPEN_THREAD') {
+        return action.id;
+    } else {
+        return state;
+    }
 }
 
 function threadsReducer(state, action) {
     if (action.type === 'ADD_MESSAGE') {
+        const threadIndex = state.findIndex(
+            (t) => t.id === action.threadId
+        );
+        const oldThread = state[threadIndex];
+        const newThread = {
+            ...oldThread,
+            messages: messageReducer(oldThread.messages, action),
+        };
+
         const newMessage = {
             text: action.text,
             timestamp: Date.now(),
