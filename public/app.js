@@ -1,11 +1,11 @@
-function reducer(state, action) {
+function reducer(state = {}, action) {
     return {
         activeThreadId: activeThreadIdReducer(state.activeThreadId, action),
         threads: threadsReducer(state.threads, action),
     }
 }
 
-function activeThreadIdReducer(state, action) {
+function activeThreadIdReducer(state = '1-fca2', action) {
     if (action.type === 'OPEN_THREAD') {
         return action.id;
     } else {
@@ -30,7 +30,18 @@ function findThreadIndex(threads, action) {
     }
 }
 
-function threadsReducer(state, action) {
+function threadsReducer(state = [
+    {
+        id: '1-fca2',
+        title: 'Alexis Sanchez',
+        messages: messagesReducer(undefined, {}),
+    },
+    {
+        id: '2-be91',
+        title: 'Peter Cech',
+        messages: messagesReducer(undefined, {}),
+    },
+], action) {
     switch (action.type) {
         case 'ADD_MESSAGE':
         case 'DELETE_MESSAGE': {
@@ -47,64 +58,39 @@ function threadsReducer(state, action) {
                     threadIndex + 1, state.length
                 )
             ];
-            default: {
-                return state;
-            }
+        }
+        default: {
+            return state;
         }
     }
 }
 
-function messagesReducer(state, action) {
+function messagesReducer(state = [], action) {
     switch (action.type) {
-        switch (action.type) {
-            case 'ADD_MESSAGE': {
-                const newMessage = {
-                    text: action.text,
-                    timestamp: Date.now(),
-                    id: uuid.v4(),
-                };
-                return state.concat(newMessage);
-            }
-            case 'DELETE_MESSAGE': {
-                const messageIndex = state.findIndex((m) => m.id === action.id);
-                return [
-                    ...state.slice(0, messageIndex),
-                    ...state.slice(
-                        messageIndex + 1, state.length
-                    ),
-                ];
-            }
-            default: {
-                return state;
-            }
+        case 'ADD_MESSAGE': {
+            const newMessage = {
+                text: action.text,
+                timestamp: Date.now(),
+                id: uuid.v4(),
+            };
+            return state.concat(newMessage);
         }
-    }
+        case 'DELETE_MESSAGE': {
+            const messageIndex = state.findIndex((m) => m.id === action.id);
+            return [
+                ...state.slice(0, messageIndex),
+                ...state.slice(
+                    messageIndex + 1, state.length
+                ),
+            ];
+        };
+        default: {
+            return state;
+        }
     }
 }
 
-const initialState = {
-    activeThreadId: '1-fca2',
-    threads: [
-        {
-            id: '1-fca2',
-            title: 'Alexis Sanchez',
-            messages: [
-                {
-                    text: 'We beat Watford 3-0!',
-                    timestamp: Date.now(),
-                    id: uuid.v4,
-                },
-            ],
-        },
-        {
-            id: '2-be91',
-            title: 'Peter Cech',
-            messages: [],
-        },
-    ],
-};
-
-const store = Redux.createStore(reducer, initialState);
+const store = Redux.createStore(reducer);
 
 const App = React.createClass({
     componentDidMount: function() {
