@@ -1,4 +1,9 @@
-const reducer = Redux.combineReducers({
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { combineReducers, createStore } from 'redux';
+import uuid from 'uuid';
+
+const reducer = combineReducers({
     activeThreadId: activeThreadIdReducer,
     threads: threadsReducer,
 });
@@ -88,7 +93,7 @@ function messagesReducer(state = [], action) {
     }
 }
 
-const store = Redux.createStore(reducer);
+const store = createStore(reducer);
 
 const App = React.createClass({
     componentDidMount: function() {
