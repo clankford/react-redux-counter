@@ -1,3 +1,5 @@
+import React from 'react';
+
 const Tabs = (props) => (
     <div className='ui top attached tabular menu'>
         {
