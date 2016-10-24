@@ -1,40 +1,47 @@
 import React from 'react';
 // Redux store
-import store from '../store'
+import {connect} from 'react-redux';
 // Components
 import Thread from './Thread';
 
-const ThreadDisplay = React.createClass({
-    componentDidMount: function() {
-        store.subscribe(() => this.forceUpdate());
-    },
+const mapStateToThreadProps = (state) => (
+    {
+        thread: state.threads.find(
+            t => t.id === state.activeThreadId
+        ),
+    }
+);
 
-    render: function() {
-        const state = store.getState();
-        const activeThreadId = state.activeThreadId;
-        const activeThread = state.threads.find(
-            t => t.id === activeThreadId
-        );
+const mapDispatchToThreadProps = (dispatch) => (
+    {
+        onMessageClick: (id) => (
+            dispatch({
+                type: 'DELETE_MESSAGE',
+                id: id,
+            })
+        ),
+        dispatch: dispatch,
+    }
+);
 
-        return (
-            <Thread
-                thread={activeThread}
-                onMessageClick={(id) => (
-                    store.dispatch({
-                        type: 'DELETE_MESSAGE',
-                        id: id,
-                    })
-                )}
-                onMessageSubmit={(text) => (
-                    store.dispatch({
-                        type: 'ADD_MESSAGE',
-                        text: text,
-                        threadId: activeThreadId,
-                    })
-                )}
-            />
-        );
-    },
-});
+const mergeThreadProps = (stateProps, dispatchProps) => (
+    {
+        ...stateProps,
+        ...dispatchProps,
+        onMessageSubmit: (text) => (
+            dispatchProps.dispatch({
+                type: 'ADD_MESSAGE',
+                text: text,
+                threadId: stateProps.thread.id,
+            })
+        ),
+    }
+);
+
+const ThreadDisplay = connect(
+    mapStateToThreadProps,
+    mapDispatchToThreadProps,
+    mergeThreadProps
+)(Thread);
 
 export default ThreadDisplay
